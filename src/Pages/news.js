@@ -16,10 +16,11 @@ function Page() {
           (res) => res.json()
         )
       );
-      const result = Promise.all(comment);
+      const result = await Promise.all(comment);
+
       setNewsInfo(info);
+      console.log(info);
       setComments(result);
-      console.log(result);
     } catch (err) {
       console.log(err.message);
     }
@@ -29,14 +30,28 @@ function Page() {
     getNews();
   }, []);
 
+  function handleChildComment(e, id) {
+    console.log(e.target.id);
+  }
+
   return (
-    <div>
+    <div key={Math.random()}>
       <p>{newsInfo && newsInfo.url}</p>
       <p>{newsInfo && newsInfo.title}</p>
       <p>{newsInfo && newsInfo.time}</p>
       <p>{newsInfo && newsInfo.by}</p>
       <p>{newsInfo && newsInfo.descendants}</p>
-      {/* <div>{comments && comments.map((item) => <div>{item.text}</div>)}</div> */}
+      <div>
+        {comments &&
+          comments.map((item) => (
+            <div key={item.id}>
+              <p>{item.text}</p>
+              <button id={item.id} onClick={(e) => handleChildComment(e, id)}>
+                Раскрыть
+              </button>
+            </div>
+          ))}
+      </div>
     </div>
   );
 }
