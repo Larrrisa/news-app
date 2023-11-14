@@ -32,6 +32,20 @@ function Page() {
 
   function handleChildComment(e, id) {
     console.log(e.target.id);
+    // const getComment = async () => {
+    //   try {
+    //     const link = `https://hacker-news.firebaseio.com/v0/item/${e.target.id}.json`;
+    //     const comment = await fetch(link);
+    //     const data = await comment.json();
+
+    //     setNews(data);
+    //   } catch {
+    //     console.log("error");
+    //   }
+    // };
+    // useEffect(() => {
+    //   getComment();
+    // }, [e.target.id]);
   }
 
   return (
