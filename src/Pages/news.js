@@ -6,6 +6,7 @@ function Page() {
 
   const [newsInfo, setNewsInfo] = useState();
   const [comments, setComments] = useState();
+  const [childComment, setChildComment] = useState();
   const getNews = async () => {
     try {
       const link = `https://hacker-news.firebaseio.com/v0/item/${id}.json`;
@@ -19,8 +20,8 @@ function Page() {
       const result = await Promise.all(comment);
 
       setNewsInfo(info);
-      console.log(info);
       setComments(result);
+      console.log(result);
     } catch (err) {
       console.log(err.message);
     }
@@ -30,23 +31,18 @@ function Page() {
     getNews();
   }, []);
 
-  function handleChildComment(e, id) {
-    console.log(e.target.id);
-    // const getComment = async () => {
-    //   try {
-    //     const link = `https://hacker-news.firebaseio.com/v0/item/${e.target.id}.json`;
-    //     const comment = await fetch(link);
-    //     const data = await comment.json();
-
-    //     setNews(data);
-    //   } catch {
-    //     console.log("error");
-    //   }
-    // };
-    // useEffect(() => {
-    //   getComment();
-    // }, [e.target.id]);
-  }
+  // function fetchChildComments(item) {
+  //if(!item.kids){
+  // return
+  // }
+  // else {
+  //   const comment = item.kids.map((item) =>
+  //   fetch(`https://hacker-news.firebaseio.com/v0/item/${item}.json`).then(
+  //     (res) => res.json()
+  //   )
+  // );
+  // }
+  // }
 
   return (
     <div key={Math.random()}>
@@ -60,9 +56,8 @@ function Page() {
           comments.map((item) => (
             <div key={item.id}>
               <p>{item.text}</p>
-              <button id={item.id} onClick={(e) => handleChildComment(e, id)}>
-                Раскрыть
-              </button>
+              <button id={item.id}>Раскрыть</button>
+              <div>{item.kids && item.kids.map((item) => <p>{item}</p>)}</div>
             </div>
           ))}
       </div>
