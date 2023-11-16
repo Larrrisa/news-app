@@ -31,18 +31,11 @@ function Page() {
     getNews();
   }, []);
 
-  // function fetchChildComments(item) {
-  //if(!item.kids){
-  // return
-  // }
-  // else {
-  //   const comment = item.kids.map((item) =>
-  //   fetch(`https://hacker-news.firebaseio.com/v0/item/${item}.json`).then(
-  //     (res) => res.json()
-  //   )
-  // );
-  // }
-  // }
+  function fetchChildComments(item) {
+    return fetch(
+      `https://hacker-news.firebaseio.com/v0/item/${item}.json`
+    ).then((res) => res.json());
+  }
 
   return (
     <div key={Math.random()}>
@@ -57,7 +50,9 @@ function Page() {
             <div key={item.id}>
               <p>{item.text}</p>
               <button id={item.id}>Раскрыть</button>
-              <div>{item.kids && item.kids.map((item) => <p>{item}</p>)}</div>
+              <div>
+                {item.kids && item.kids.map((item) => <div>{item}</div>)}
+              </div>
             </div>
           ))}
       </div>
