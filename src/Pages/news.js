@@ -5,23 +5,46 @@ function Page() {
   const { id } = useParams();
 
   const [newsInfo, setNewsInfo] = useState();
-  const [comments, setComments] = useState();
-  const [childComment, setChildComment] = useState();
+  const [comments, setComments] = useState([]);
+
   const getNews = async () => {
     try {
       const link = `https://hacker-news.firebaseio.com/v0/item/${id}.json`;
       const newsResult = await fetch(link);
       const info = await newsResult.json();
-      const comment = info.kids.map((item) =>
-        fetch(`https://hacker-news.firebaseio.com/v0/item/${item}.json`).then(
-          (res) => res.json()
-        )
-      );
-      const result = await Promise.all(comment);
+
+      function fetchComments(info) {
+        const commentPromises = info.kids.map((item) =>
+          fetch(`https://hacker-news.firebaseio.com/v0/item/${item}.json`).then(
+            (res) => res.json()
+          )
+        );
+
+        return Promise.all(commentPromises).then((comments) => {
+          const nestedComments = comments.map((item) => {
+            if (item.kids && item.kids.length > 0) {
+              return fetchComments(item).then((child) => {
+                return {
+                  main: item,
+                  child: child,
+                };
+              });
+            } else {
+              return {
+                main: item,
+                child: [],
+              };
+            }
+          });
+          return Promise.all(nestedComments);
+        });
+      }
+      const allChildComments = fetchComments(info).then((result) => {
+        console.log(result);
+        setComments(result);
+      });
 
       setNewsInfo(info);
-      setComments(result);
-      console.log(result);
     } catch (err) {
       console.log(err.message);
     }
@@ -31,11 +54,17 @@ function Page() {
     getNews();
   }, []);
 
-  function fetchChildComments(item) {
-    return fetch(
-      `https://hacker-news.firebaseio.com/v0/item/${item}.json`
-    ).then((res) => res.json());
-  }
+  const childItems = (items) => {
+    return (
+      <ul>
+        {items &&
+          items.map((item) => (
+            <li key={item.id}>{item.main.text}</li>
+            // <div>{item.child.length > 0 && childItems(item.child)}</div>
+          ))}
+      </ul>
+    );
+  };
 
   return (
     <div key={Math.random()}>
@@ -47,12 +76,10 @@ function Page() {
       <div>
         {comments &&
           comments.map((item) => (
-            <div key={item.id}>
-              <p>{item.text}</p>
-              <button id={item.id}>Раскрыть</button>
-              <div>
-                {item.kids && item.kids.map((item) => <div>{item}</div>)}
-              </div>
+            <div key={item.main.id}>
+              <p>{item.main.text}</p>
+              <button id={item.main.id}>Раскрыть</button>
+              <div>{item.child.length > 0 && childItems(item.child)}</div>
             </div>
           ))}
       </div>
