@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { Button } from "semantic-ui-react";
+import { Card, Space, Typography, Button, Comment } from "antd";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { DownOutlined } from "@ant-design/icons";
+
 import Page from "./news";
 
 export function MainPage() {
   const [news, setNews] = useState([]);
+  const { Title, Text } = Typography;
 
   const getNews = async () => {
     try {
@@ -33,21 +36,40 @@ export function MainPage() {
     getNews();
   }
 
+  useEffect(() => {
+    const timer = setInterval(getNews, 60000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
   return (
     <div>
-      <h1>Hacker News</h1>
-      <Button content="Refresh" active onClick={handleRefreshNews} />
+      <Title>Hacker News </Title>
+      <Button onClick={handleRefreshNews}>Refresh</Button>
       {news.map((data) => {
         return (
           <div key={data.id}>
-            <Link
-              to={{
-                pathname: `${data.id}`,
+            <Space
+              direction="vertical"
+              size="middle"
+              style={{
+                display: "flex",
               }}
-            >
-              {data.title} - Рейтинг:{data.score} - Name: {data.by} - Date:
-              {new Date(data.time).toString()}
-            </Link>
+            ></Space>
+            <Card size="middle">
+              <Link
+                to={{
+                  pathname: `${data.id}`,
+                }}
+              >
+                <Text strong>{data.title}</Text>
+              </Link>
+              <div>
+                {data.score} points by {data.by}
+                {new Date(data.time).toString()}
+              </div>
+            </Card>
           </div>
         );
       })}

@@ -1,13 +1,26 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+import { Button, Comment, Form, Header } from "semantic-ui-react";
 
 function Page() {
   const { id } = useParams();
 
   const [newsInfo, setNewsInfo] = useState();
   const [comments, setComments] = useState([]);
+  //const [showChildComment, setShowChildComment] = useState(false);
 
-  const getNews = async () => {
+  const getInfo = async () => {
+    try {
+      const link = `https://hacker-news.firebaseio.com/v0/item/${id}.json`;
+      const newsResult = await fetch(link);
+      const info = await newsResult.json();
+      setNewsInfo(info);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const getComments = async () => {
     try {
       const link = `https://hacker-news.firebaseio.com/v0/item/${id}.json`;
       const newsResult = await fetch(link);
@@ -43,28 +56,50 @@ function Page() {
         console.log(result);
         setComments(result);
       });
-
-      setNewsInfo(info);
     } catch (err) {
       console.log(err.message);
     }
   };
 
   useEffect(() => {
-    getNews();
+    getInfo();
+    getComments();
   }, []);
 
-  const childItems = (items) => {
+  function childItems(items) {
     return (
       <ul>
         {items &&
-          items.map((item) => (
-            <li key={item.id}>{item.main.text}</li>
-            // <div>{item.child.length > 0 && childItems(item.child)}</div>
-          ))}
+          items.map(
+            (item) =>
+              !item.main.dead && (
+                <li key={item.id}>
+                  <Comment.Text>{item.main.text}</Comment.Text>
+
+                  {item.child && childItems(item.child)}
+                </li>
+              )
+          )}
       </ul>
     );
-  };
+  }
+
+  function handleRefreshComments() {
+    getComments();
+  }
+
+  function handleShowComments(id, e, item) {
+    const updatedComments = comments.map((comment) => {
+      if (comment.main.id === item.main.id) {
+        return {
+          ...comment,
+          show: true,
+        };
+      }
+      return comment;
+    });
+    setComments(updatedComments);
+  }
 
   return (
     <div key={Math.random()}>
@@ -73,15 +108,37 @@ function Page() {
       <p>{newsInfo && newsInfo.time}</p>
       <p>{newsInfo && newsInfo.by}</p>
       <p>{newsInfo && newsInfo.descendants}</p>
+      <Link
+        to={{
+          pathname: "/",
+        }}
+      >
+        <button>Back</button>
+      </Link>
+      <button onClick={handleRefreshComments}>Refresh</button>
+      <Header as="h3" dividing>
+        Comments
+      </Header>
       <div>
-        {comments &&
-          comments.map((item) => (
-            <div key={item.main.id}>
-              <p>{item.main.text}</p>
-              <button id={item.main.id}>Раскрыть</button>
-              <div>{item.child.length > 0 && childItems(item.child)}</div>
-            </div>
-          ))}
+        <Comment>
+          {comments &&
+            comments.map(
+              (item) =>
+                !item.main.dead && (
+                  <div key={item.main.id}>
+                    <Comment.Text>{item.main.text}</Comment.Text>
+
+                    <button
+                      id={item.main.id}
+                      onClick={(e) => handleShowComments(id, e, item)}
+                    >
+                      Раскрыть
+                    </button>
+                    <div>{item.show && childItems(item.child)}</div>
+                  </div>
+                )
+            )}
+        </Comment>
       </div>
     </div>
   );
