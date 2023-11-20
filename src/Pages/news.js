@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Button, Comment, Form, Header } from "semantic-ui-react";
+import { Typography, Comment, Button } from "antd";
+import Icon from "@ant-design/icons";
 
 function Page() {
-  const { id } = useParams();
+  const { Title, Text } = Typography;
 
+  const { id } = useParams();
   const [newsInfo, setNewsInfo] = useState();
   const [comments, setComments] = useState([]);
   //const [showChildComment, setShowChildComment] = useState(false);
@@ -53,7 +55,6 @@ function Page() {
         });
       }
       const allChildComments = fetchComments(info).then((result) => {
-        console.log(result);
         setComments(result);
       });
     } catch (err) {
@@ -74,7 +75,7 @@ function Page() {
             (item) =>
               !item.main.dead && (
                 <li key={item.id}>
-                  <Comment.Text>{item.main.text}</Comment.Text>
+                  {item.main.text}
 
                   {item.child && childItems(item.child)}
                 </li>
@@ -102,43 +103,53 @@ function Page() {
   }
 
   return (
-    <div key={Math.random()}>
-      <p>{newsInfo && newsInfo.url}</p>
-      <p>{newsInfo && newsInfo.title}</p>
-      <p>{newsInfo && newsInfo.time}</p>
-      <p>{newsInfo && newsInfo.by}</p>
-      <p>{newsInfo && newsInfo.descendants}</p>
-      <Link
-        to={{
-          pathname: "/",
-        }}
-      >
-        <button>Back</button>
-      </Link>
-      <button onClick={handleRefreshComments}>Refresh</button>
-      <Header as="h3" dividing>
-        Comments
-      </Header>
-      <div>
-        <Comment>
-          {comments &&
-            comments.map(
-              (item) =>
-                !item.main.dead && (
-                  <div key={item.main.id}>
-                    <Comment.Text>{item.main.text}</Comment.Text>
+    <div>
+      <Button>
+        <Link
+          to={{
+            pathname: "/",
+          }}
+        >
+          Go back
+        </Link>
+      </Button>
+      {newsInfo && (
+        <div key={newsInfo.time.id}>
+          <Title>{newsInfo.title} </Title>
+          <p>
+            <Text underline>{newsInfo.url}</Text>
+          </p>
 
-                    <button
-                      id={item.main.id}
-                      onClick={(e) => handleShowComments(id, e, item)}
-                    >
-                      Раскрыть
-                    </button>
-                    <div>{item.show && childItems(item.child)}</div>
-                  </div>
-                )
-            )}
-        </Comment>
+          <p>
+            <Text strong>{newsInfo.time}</Text>
+          </p>
+
+          <Text strong>By {newsInfo.by}</Text>
+          <Text strong>{newsInfo.descendants}</Text>
+        </div>
+      )}
+
+      <button onClick={handleRefreshComments}>Refresh</button>
+      <h2> Comments</h2>
+
+      <div>
+        {comments &&
+          comments.map(
+            (item) =>
+              !item.main.dead && (
+                <div key={item.main.id}>
+                  {item.main.text}
+
+                  <button
+                    id={item.main.id}
+                    onClick={(e) => handleShowComments(id, e, item)}
+                  >
+                    Раскрыть
+                  </button>
+                  <div>{item.show && childItems(item.child)}</div>
+                </div>
+              )
+          )}
       </div>
     </div>
   );

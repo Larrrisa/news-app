@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
-import { Card, Space, Typography, Button, Comment } from "antd";
+import { Card, Space, Typography, Button, Comment, Flex } from "antd";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import { DownOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  ClockCircleOutlined,
+  RedoOutlined,
+} from "@ant-design/icons";
 
 import Page from "./news";
 
@@ -46,7 +50,10 @@ export function MainPage() {
   return (
     <div>
       <Title>Hacker News </Title>
-      <Button onClick={handleRefreshNews}>Refresh</Button>
+      <div onClick={handleRefreshNews}>
+        <RedoOutlined />
+        Refresh
+      </div>
       {news.map((data) => {
         return (
           <div key={data.id}>
@@ -66,8 +73,17 @@ export function MainPage() {
                 <Text strong>{data.title}</Text>
               </Link>
               <div>
-                {data.score} points by {data.by}
-                {new Date(data.time).toString()}
+                <Flex gap="middle">
+                  {data.score} points
+                  <div>
+                    <UserOutlined /> {data.by}
+                  </div>
+                  <div>
+                    {" "}
+                    <ClockCircleOutlined />{" "}
+                    {new Date(data.time * 1000).toString()}
+                  </div>
+                </Flex>
               </div>
             </Card>
           </div>
