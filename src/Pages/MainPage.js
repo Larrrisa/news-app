@@ -79,9 +79,8 @@ export function MainPage() {
                     <UserOutlined /> {data.by}
                   </div>
                   <div>
-                    {" "}
                     <ClockCircleOutlined />{" "}
-                    {new Date(data.time * 1000).toString()}
+                    {(Date.now() - new Date(data.time * 1000)) / 1000 / 60 / 60}
                   </div>
                 </Flex>
               </div>
