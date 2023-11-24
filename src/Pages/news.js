@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Typography, Comment, Button } from "antd";
-import Icon from "@ant-design/icons";
+import { Typography, Comment, Button, Card, List, Divider } from "antd";
+import { Tree } from "antd";
+import type { DataNode } from "antd/es/tree";
+import { DownOutlined } from "@ant-design/icons";
 
 function Page() {
   const { Title, Text } = Typography;
@@ -56,6 +58,7 @@ function Page() {
       }
       const allChildComments = fetchComments(info).then((result) => {
         setComments(result);
+        console.log(result);
       });
     } catch (err) {
       console.log(err.message);
@@ -82,7 +85,7 @@ function Page() {
               )
           )}
       </ul>
-    );
+     
   }
 
   function handleRefreshComments() {
@@ -100,6 +103,27 @@ function Page() {
       return comment;
     });
     setComments(updatedComments);
+  }
+
+  function handleTime(item) {
+    const time = Math.floor(
+      (Date.now() - new Date(item * 1000)) / 1000 / 60 / 60
+    );
+    if (time === 0) {
+      return `${Math.floor(
+        (Date.now() - new Date(item * 1000)) / 1000 / 60
+      )} minutes ago`;
+    } else if (time >= 24 && time < 48) {
+      return "1 day ago";
+    } else if (time >= 48 && time < 72) {
+      return "2 days ago";
+    } else if (time >= 72) {
+      return "few days ago";
+    } else {
+      return `${Math.floor(
+        (Date.now() - new Date(item * 1000)) / 1000 / 60 / 60
+      )} hours ago`;
+    }
   }
 
   return (
@@ -121,7 +145,7 @@ function Page() {
           </p>
 
           <p>
-            <Text strong>{newsInfo.time}</Text>
+            <Text strong>{handleTime(newsInfo.time)}</Text>
           </p>
 
           <Text strong>By {newsInfo.by}</Text>
@@ -131,7 +155,6 @@ function Page() {
 
       <button onClick={handleRefreshComments}>Refresh</button>
       <h2> Comments</h2>
-
       <div>
         {comments &&
           comments.map(
@@ -147,6 +170,7 @@ function Page() {
                     Раскрыть
                   </button>
                   <div>{item.show && childItems(item.child)}</div>
+                  <Divider />
                 </div>
               )
           )}
