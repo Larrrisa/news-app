@@ -19,6 +19,7 @@ function Page() {
       const newsResult = await fetch(link);
       const info = await newsResult.json();
       setNewsInfo(info);
+      console.log(info);
     } catch (err) {
       console.log(err.message);
     }
@@ -58,7 +59,6 @@ function Page() {
       }
       const allChildComments = fetchComments(info).then((result) => {
         setComments(result);
-        console.log(result);
       });
     } catch (err) {
       console.log(err.message);
@@ -76,16 +76,15 @@ function Page() {
         {items &&
           items.map(
             (item) =>
-              !item.main.dead && (
+              !item.main.deleted && (
                 <li key={item.id}>
-                  {item.main.text}
-
+                  <div dangerouslySetInnerHTML={{ __html: item.main.text }} />
                   {item.child && childItems(item.child)}
                 </li>
               )
           )}
       </ul>
-     
+    );
   }
 
   function handleRefreshComments() {
@@ -149,26 +148,23 @@ function Page() {
           </p>
 
           <Text strong>By {newsInfo.by}</Text>
-          <Text strong>{newsInfo.descendants}</Text>
+          <p>{newsInfo.descendants}</p>
         </div>
       )}
 
       <button onClick={handleRefreshComments}>Refresh</button>
       <h2> Comments</h2>
+
       <div>
         {comments &&
           comments.map(
             (item) =>
-              !item.main.dead && (
+              !item.main.deleted && (
                 <div key={item.main.id}>
-                  {item.main.text}
-
-                  <button
-                    id={item.main.id}
+                  <div
                     onClick={(e) => handleShowComments(id, e, item)}
-                  >
-                    Раскрыть
-                  </button>
+                    dangerouslySetInnerHTML={{ __html: item.main.text }}
+                  />
                   <div>{item.show && childItems(item.child)}</div>
                   <Divider />
                 </div>
