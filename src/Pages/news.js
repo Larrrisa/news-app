@@ -1,16 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Typography, Comment, Button, Card, List, Divider } from "antd";
-import { Tree } from "antd";
-import type { DataNode } from "antd/es/tree";
-import { DownOutlined } from "@ant-design/icons";
+import { Button, Comment, Form, Header } from "semantic-ui-react";
 
 function Page() {
-  const { Title, Text } = Typography;
-
   const { id } = useParams();
   const [newsInfo, setNewsInfo] = useState();
   const [comments, setComments] = useState([]);
+  const [open, setOpen] = useState(true);
   //const [showChildComment, setShowChildComment] = useState(false);
 
   const getInfo = async () => {
@@ -72,18 +68,18 @@ function Page() {
 
   function childItems(items) {
     return (
-      <ul>
+      <div>
         {items &&
           items.map(
             (item) =>
               !item.main.deleted && (
-                <li key={item.id}>
+                <div key={item.id}>
                   <div dangerouslySetInnerHTML={{ __html: item.main.text }} />
                   {item.child && childItems(item.child)}
-                </li>
+                </div>
               )
           )}
-      </ul>
+      </div>
     );
   }
 
@@ -127,7 +123,7 @@ function Page() {
 
   return (
     <div>
-      <Button>
+      <button>
         <Link
           to={{
             pathname: "/",
@@ -135,42 +131,50 @@ function Page() {
         >
           Go back
         </Link>
-      </Button>
+      </button>
       {newsInfo && (
-        <div key={newsInfo.time.id}>
-          <Title>{newsInfo.title} </Title>
+        <div
+          key={newsInfo.time.id}
+          class="ui raised very padded text container segment"
+        >
+          <p>{newsInfo.title} </p>
           <p>
-            <Text underline>{newsInfo.url}</Text>
+            <p>{newsInfo.url}</p>
           </p>
 
           <p>
-            <Text strong>{handleTime(newsInfo.time)}</Text>
+            <p>{handleTime(newsInfo.time)}</p>
           </p>
 
-          <Text strong>By {newsInfo.by}</Text>
+          <p>By {newsInfo.by}</p>
           <p>{newsInfo.descendants}</p>
         </div>
       )}
 
       <button onClick={handleRefreshComments}>Refresh</button>
-      <h2> Comments</h2>
 
-      <div>
-        {comments &&
-          comments.map(
-            (item) =>
-              !item.main.deleted && (
-                <div key={item.main.id}>
-                  <div
-                    onClick={(e) => handleShowComments(id, e, item)}
-                    dangerouslySetInnerHTML={{ __html: item.main.text }}
-                  />
-                  <div>{item.show && childItems(item.child)}</div>
-                  <Divider />
-                </div>
-              )
-          )}
-      </div>
+      <h2> Comments</h2>
+      <Comment>
+        <Comment.Content>
+          <div>
+            {comments &&
+              comments.map(
+                (item) =>
+                  !item.main.deleted && (
+                    <Comment.Text>
+                      <div key={item.main.id}>
+                        <div
+                          onClick={(e) => handleShowComments(id, e, item)}
+                          dangerouslySetInnerHTML={{ __html: item.main.text }}
+                        />
+                        <div>{item.show && childItems(item.child)}</div>
+                      </div>
+                    </Comment.Text>
+                  )
+              )}
+          </div>
+        </Comment.Content>
+      </Comment>
     </div>
   );
 }
