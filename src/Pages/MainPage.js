@@ -1,17 +1,9 @@
 import { useEffect, useState } from "react";
-import { Card, Space, Typography, Button, Comment, Flex } from "antd";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import {
-  UserOutlined,
-  ClockCircleOutlined,
-  RedoOutlined,
-} from "@ant-design/icons";
-
 import Page from "./news";
 
 export function MainPage() {
   const [news, setNews] = useState([]);
-  const { Title, Text } = Typography;
 
   const getNews = async () => {
     try {
@@ -69,46 +61,39 @@ export function MainPage() {
   }
 
   return (
-    <div>
-      <Title>Hacker News </Title>
-      <div onClick={handleRefreshNews}>
-        <RedoOutlined />
-        Refresh
+    <div className="container">
+      <div className="header">
+        <h1>Hacker News </h1>
+        <div onClick={handleRefreshNews}>
+          <ion-icon size="large" name="refresh-outline"></ion-icon>
+        </div>
       </div>
-      {news.map((data) => {
-        return (
-          <div key={data.id}>
-            <Space
-              direction="vertical"
-              size="middle"
-              style={{
-                display: "flex",
-              }}
-            ></Space>
-            <Card size="middle">
-              <Link
-                to={{
-                  pathname: `${data.id}`,
-                }}
-              >
-                <Text strong>{data.title}</Text>
-              </Link>
-              <div>
-                <Flex gap="middle">
-                  {data.score} points
-                  <div>
-                    <UserOutlined /> {data.by}
-                  </div>
-                  <div>
-                    <ClockCircleOutlined />
-                    {handleTime(data.time)}
-                  </div>
-                </Flex>
+      <div className="content">
+        {news.map((data) => {
+          return (
+            <div className="news__item" key={data.id}>
+              <div className="news__item__info">
+                <Link
+                  to={{
+                    pathname: `${data.id}`,
+                  }}
+                >
+                  <p className="news__item__info__heading">{data.title}</p>
+                </Link>
+
+                <div>
+                  {handleTime(data.time)} - by{" "}
+                  <span className="news__item__info__user">{data.by}</span>
+                </div>
               </div>
-            </Card>
-          </div>
-        );
-      })}
+              <div className="news__item__info__social">
+                <p>{data.score} points</p>
+                <p>{data.descendants} comments</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

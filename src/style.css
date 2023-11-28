@@ -1,0 +1,126 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Avenir", sans-serif;
+  font-size: 1rem;
+  background-color: #c8c8c8;
+}
+
+.container {
+  margin: 2rem 10rem;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 3rem;
+  /* color: rgb(226, 101, 43); */
+  margin-right: 1rem;
+}
+
+.content {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: none;
+}
+
+.news__item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: solid 1px #c8c8c8;
+}
+
+.news__item__info {
+}
+
+.news__item__info__heading {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+a {
+  text-decoration: none;
+  color: rgb(226, 101, 43);
+}
+
+a:visited {
+  color: rgb(221, 152, 120);
+}
+
+.news__item__info__user {
+  color: rgb(226, 101, 43);
+}
+
+.news__item__info__social {
+  display: flex;
+  align-self: center;
+  justify-content: space-between;
+  flex-basis: 15%;
+}
+
+button {
+  border-radius: 0.5rem;
+  border: none;
+  padding: 0.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.comments__info {
+  margin-bottom: 2rem;
+  font-weight: bold;
+}
+
+.comments__count {
+  display: flex;
+  width: 15%;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.comments__info__link {
+  color: rgb(226, 101, 43);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.comments__info__social {
+  display: flex;
+  justify-content: space-between;
+  width: 20%;
+}
+
+.comments__info__user {
+  color: rgb(226, 101, 43);
+}
+
+.comments__item {
+  line-height: 1.4;
+  border-bottom: solid 1px #c8c8c8;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+ul {
+  padding-top: 1rem;
+  padding-left: 2.5rem;
+  list-style-type: none;
+  /* margin-bottom: 1rem; */
+  list-style-image: url("../public/caret-forward-outline.svg");
+}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Button, Comment, Form, Header } from "semantic-ui-react";
+// import { Button, Comment, Form, Header } from "semantic-ui-react";
 
 function Page() {
   const { id } = useParams();
@@ -68,18 +68,18 @@ function Page() {
 
   function childItems(items) {
     return (
-      <div>
+      <ul>
         {items &&
           items.map(
             (item) =>
               !item.main.deleted && (
-                <div key={item.id}>
+                <li key={item.id}>
                   <div dangerouslySetInnerHTML={{ __html: item.main.text }} />
                   {item.child && childItems(item.child)}
-                </div>
+                </li>
               )
           )}
-      </div>
+      </ul>
     );
   }
 
@@ -122,7 +122,7 @@ function Page() {
   }
 
   return (
-    <div>
+    <div className="container">
       <button>
         <Link
           to={{
@@ -133,48 +133,46 @@ function Page() {
         </Link>
       </button>
       {newsInfo && (
-        <div
-          key={newsInfo.time.id}
-          class="ui raised very padded text container segment"
-        >
-          <p>{newsInfo.title} </p>
-          <p>
-            <p>{newsInfo.url}</p>
-          </p>
-
-          <p>
-            <p>{handleTime(newsInfo.time)}</p>
-          </p>
-
-          <p>By {newsInfo.by}</p>
-          <p>{newsInfo.descendants}</p>
+        <div key={newsInfo.time.id}>
+          <div className="header">
+            <h1>{newsInfo.title} </h1>
+          </div>
+          <div className="comments__info">
+            <p className="comments__info__link">{newsInfo.url}</p>
+            <div className="comments__info__social">
+              <p>{handleTime(newsInfo.time)}</p>
+              <p>
+                by <span className="comments__info__user">{newsInfo.by}</span>
+              </p>
+            </div>
+          </div>
+          <div className="comments__count">
+            <span>{newsInfo.descendants}</span>
+            <p>Comments</p>
+            <div onClick={handleRefreshComments}>
+              <ion-icon size="large" name="refresh-outline"></ion-icon>
+            </div>
+          </div>
         </div>
       )}
 
-      <button onClick={handleRefreshComments}>Refresh</button>
+      {/* <button onClick={handleRefreshComments}>Refresh</button> */}
 
-      <h2> Comments</h2>
-      <Comment>
-        <Comment.Content>
-          <div>
-            {comments &&
-              comments.map(
-                (item) =>
-                  !item.main.deleted && (
-                    <Comment.Text>
-                      <div key={item.main.id}>
-                        <div
-                          onClick={(e) => handleShowComments(id, e, item)}
-                          dangerouslySetInnerHTML={{ __html: item.main.text }}
-                        />
-                        <div>{item.show && childItems(item.child)}</div>
-                      </div>
-                    </Comment.Text>
-                  )
-              )}
-          </div>
-        </Comment.Content>
-      </Comment>
+      <div className="content">
+        {comments &&
+          comments.map(
+            (item) =>
+              !item.main.deleted && (
+                <div className="comments__item" key={item.main.id}>
+                  <div
+                    onClick={(e) => handleShowComments(id, e, item)}
+                    dangerouslySetInnerHTML={{ __html: item.main.text }}
+                  />
+                  <div>{item.show && childItems(item.child)}</div>
+                </div>
+              )
+          )}
+      </div>
     </div>
   );
 }
