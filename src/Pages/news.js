@@ -15,7 +15,6 @@ function Page() {
       const newsResult = await fetch(link);
       const info = await newsResult.json();
       setNewsInfo(info);
-      console.log(info);
     } catch (err) {
       console.log(err.message);
     }
@@ -55,6 +54,7 @@ function Page() {
       }
       const allChildComments = fetchComments(info).then((result) => {
         setComments(result);
+        console.log(result);
       });
     } catch (err) {
       console.log(err.message);
@@ -67,6 +67,7 @@ function Page() {
   }, []);
 
   function childItems(items) {
+    if (!items || items.length === 0) return null;
     return (
       <ul>
         {items &&
@@ -134,7 +135,7 @@ function Page() {
       </button>
       {newsInfo && (
         <div key={newsInfo.time.id}>
-          <div className="header">
+          <div className="header_comments">
             <h1>{newsInfo.title} </h1>
           </div>
           <div className="comments__info">
@@ -163,11 +164,12 @@ function Page() {
           comments.map(
             (item) =>
               !item.main.deleted && (
-                <div className="comments__item" key={item.main.id}>
-                  <div
-                    onClick={(e) => handleShowComments(id, e, item)}
-                    dangerouslySetInnerHTML={{ __html: item.main.text }}
-                  />
+                <div
+                  className="comments__item"
+                  key={item.main.id}
+                  onClick={(e) => handleShowComments(id, e, item)}
+                >
+                  <div dangerouslySetInnerHTML={{ __html: item.main.text }} />
                   <div>{item.show && childItems(item.child)}</div>
                 </div>
               )

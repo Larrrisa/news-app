@@ -19,6 +19,7 @@ export function MainPage() {
         );
       const result = await Promise.all(news);
       setNews(result);
+      console.log(result);
     } catch {
       console.log("error");
     }
@@ -47,6 +48,10 @@ export function MainPage() {
       return `${Math.floor(
         (Date.now() - new Date(item * 1000)) / 1000 / 60
       )} minutes ago`;
+    } else if (
+      Math.floor((Date.now() - new Date(item * 1000)) / 1000 / 60 / 60) === 1
+    ) {
+      return "1 hour ago";
     } else if (time >= 24 && time < 48) {
       return "1 day ago";
     } else if (time >= 48 && time < 72) {
@@ -82,13 +87,21 @@ export function MainPage() {
                 </Link>
 
                 <div>
-                  {handleTime(data.time)} - by{" "}
-                  <span className="news__item__info__user">{data.by}</span>
+                  {handleTime(data.time)} - by
+                  <span className="news__item__info__user"> {data.by}</span>
                 </div>
               </div>
               <div className="news__item__info__social">
-                <p>{data.score} points</p>
-                <p>{data.descendants} comments</p>
+                <p>
+                  {data.score === 1
+                    ? ` ${data.score} point`
+                    : `${data.score} points`}
+                </p>
+                <p>
+                  {data.descendants
+                    ? `${data.descendants} comments`
+                    : `0 comments`}
+                </p>
               </div>
             </div>
           );
