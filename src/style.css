@@ -77,6 +77,7 @@ button {
   text-align: center;
   margin-bottom: 1rem;
   font-weight: bold;
+  background-color: #ffffff;
 }
 
 .header_comments {
@@ -90,7 +91,7 @@ button {
 
 .comments__count {
   display: flex;
-  width: 12%;
+  width: 15%;
   justify-content: space-between;
   align-items: center;
   font-weight: bold;
@@ -127,6 +128,10 @@ ul {
   list-style-type: none;
   /* margin-bottom: 1rem; */
   list-style-image: url("../public/caret-forward-outline.svg");
+}
+
+ul > li {
+  margin-bottom: 1rem;
 }
 
 @media (max-width: 100rem) {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "semantic-ui-react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import Page from "./Pages/news";
+import Page from "./Pages/News";
 import MainPage from "./Pages/MainPage";
 
 function App() {

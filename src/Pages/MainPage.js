@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import Page from "./news";
+import Page from "./News";
+import handleTime from "../Utils/formatTime";
 
-export function MainPage() {
+function MainPage() {
   const [news, setNews] = useState([]);
 
   const getNews = async () => {
@@ -19,7 +20,6 @@ export function MainPage() {
         );
       const result = await Promise.all(news);
       setNews(result);
-      console.log(result);
     } catch {
       console.log("error");
     }
@@ -39,31 +39,6 @@ export function MainPage() {
       clearInterval(timer);
     };
   }, []);
-
-  function handleTime(item) {
-    const time = Math.floor(
-      (Date.now() - new Date(item * 1000)) / 1000 / 60 / 60
-    );
-    if (time === 0) {
-      return `${Math.floor(
-        (Date.now() - new Date(item * 1000)) / 1000 / 60
-      )} minutes ago`;
-    } else if (
-      Math.floor((Date.now() - new Date(item * 1000)) / 1000 / 60 / 60) === 1
-    ) {
-      return "1 hour ago";
-    } else if (time >= 24 && time < 48) {
-      return "1 day ago";
-    } else if (time >= 48 && time < 72) {
-      return "2 days ago";
-    } else if (time >= 72) {
-      return "few days ago";
-    } else {
-      return `${Math.floor(
-        (Date.now() - new Date(item * 1000)) / 1000 / 60 / 60
-      )} hours ago`;
-    }
-  }
 
   return (
     <div className="container">

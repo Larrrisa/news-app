@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-// import { Button, Comment, Form, Header } from "semantic-ui-react";
+import handleTime from "../Utils/formatTime";
 
 function Page() {
   const { id } = useParams();
   const [newsInfo, setNewsInfo] = useState();
   const [comments, setComments] = useState([]);
-  const [open, setOpen] = useState(true);
-  //const [showChildComment, setShowChildComment] = useState(false);
 
   const getInfo = async () => {
     try {
@@ -54,7 +52,6 @@ function Page() {
       }
       const allChildComments = fetchComments(info).then((result) => {
         setComments(result);
-        console.log(result);
       });
     } catch (err) {
       console.log(err.message);
@@ -101,27 +98,6 @@ function Page() {
     setComments(updatedComments);
   }
 
-  function handleTime(item) {
-    const time = Math.floor(
-      (Date.now() - new Date(item * 1000)) / 1000 / 60 / 60
-    );
-    if (time === 0) {
-      return `${Math.floor(
-        (Date.now() - new Date(item * 1000)) / 1000 / 60
-      )} minutes ago`;
-    } else if (time >= 24 && time < 48) {
-      return "1 day ago";
-    } else if (time >= 48 && time < 72) {
-      return "2 days ago";
-    } else if (time >= 72) {
-      return "few days ago";
-    } else {
-      return `${Math.floor(
-        (Date.now() - new Date(item * 1000)) / 1000 / 60 / 60
-      )} hours ago`;
-    }
-  }
-
   return (
     <div className="container">
       <button>
@@ -157,12 +133,11 @@ function Page() {
         </div>
       )}
 
-      {/* <button onClick={handleRefreshComments}>Refresh</button> */}
-
       <div className="content">
         {comments &&
           comments.map(
             (item) =>
+              !item.main.dead &&
               !item.main.deleted && (
                 <div
                   className="comments__item"
