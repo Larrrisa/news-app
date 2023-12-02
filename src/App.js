@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
-import { Button } from "semantic-ui-react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Page from "./Pages/News";
 import MainPage from "./Pages/MainPage";
+import NotFoundPage from "./Pages/NotFoundPage";
 
 function App() {
   return (
@@ -11,6 +10,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/:id" element={<Page />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
     </BrowserRouter>
