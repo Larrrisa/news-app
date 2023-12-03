@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import handleTime from "../Utils/formatTime";
+import childComments from "../Utils/childComments";
+import showChildComments from "../Utils/showChildComments";
+import { Image, Segment } from "semantic-ui-react";
 
-function Page() {
+function NewsPage() {
   const { id } = useParams();
   const [newsInfo, setNewsInfo] = useState();
   const [comments, setComments] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getInfo = async () => {
     try {
@@ -25,6 +29,7 @@ function Page() {
       const info = await newsResult.json();
 
       function fetchComments(info) {
+        setIsLoading(true);
         const commentPromises = info.kids.map((item) =>
           fetch(`https://hacker-news.firebaseio.com/v0/item/${item}.json`).then(
             (res) => res.json()
@@ -52,6 +57,7 @@ function Page() {
       }
       const allChildComments = fetchComments(info).then((result) => {
         setComments(result);
+        setIsLoading(false);
       });
     } catch (err) {
       console.log(err.message);
@@ -63,44 +69,13 @@ function Page() {
     getComments();
   }, []);
 
-  function childItems(items) {
-    if (!items || items.length === 0) return null;
-    return (
-      <ul>
-        {items &&
-          items.map(
-            (item) =>
-              !item.main.deleted && (
-                <li key={item.id}>
-                  <div dangerouslySetInnerHTML={{ __html: item.main.text }} />
-                  {item.child && childItems(item.child)}
-                </li>
-              )
-          )}
-      </ul>
-    );
-  }
-
   function handleRefreshComments() {
     getComments();
   }
 
-  function handleShowComments(id, e, item) {
-    const updatedComments = comments.map((comment) => {
-      if (comment.main.id === item.main.id) {
-        return {
-          ...comment,
-          show: true,
-        };
-      }
-      return comment;
-    });
-    setComments(updatedComments);
-  }
-
   return (
     <div className="container">
-      <button>
+      <div className="link">
         <Link
           to={{
             pathname: "/",
@@ -108,7 +83,7 @@ function Page() {
         >
           Go back
         </Link>
-      </button>
+      </div>
       {newsInfo && (
         <div key={newsInfo.time.id}>
           <div className="header_comments">
@@ -124,7 +99,7 @@ function Page() {
             </div>
           </div>
           <div className="comments__count">
-            <span>{newsInfo.descendants}</span>
+            <span>{newsInfo.descendants ? newsInfo.descendants : 0}</span>
             <p>Comments</p>
             <div onClick={handleRefreshComments}>
               <ion-icon size="large" name="refresh-outline"></ion-icon>
@@ -134,7 +109,12 @@ function Page() {
       )}
 
       <div className="content">
-        {comments &&
+        {isLoading ? (
+          <Segment>
+            <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+          </Segment>
+        ) : (
+          comments &&
           comments.map(
             (item) =>
               !item.main.dead &&
@@ -142,16 +122,19 @@ function Page() {
                 <div
                   className="comments__item"
                   key={item.main.id}
-                  onClick={(e) => handleShowComments(id, e, item)}
+                  onClick={(e) =>
+                    showChildComments(id, e, item, comments, setComments)
+                  }
                 >
                   <div dangerouslySetInnerHTML={{ __html: item.main.text }} />
-                  <div>{item.show && childItems(item.child)}</div>
+                  <div>{item.show && childComments(item.child)}</div>
                 </div>
               )
-          )}
+          )
+        )}
       </div>
     </div>
   );
 }
 
-export default Page;
+export default NewsPage;

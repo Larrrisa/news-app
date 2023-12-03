@@ -67,7 +67,7 @@ a:visited {
   flex-basis: 15%;
 }
 
-button {
+.link {
   border-radius: 0.5rem;
   border: none;
   padding: 0.5rem;
@@ -75,6 +75,7 @@ button {
   margin-bottom: 1rem;
   font-weight: bold;
   background-color: #ffffff;
+  width: 5rem;
 }
 
 .header_comments {
@@ -153,6 +154,11 @@ ul > li {
   display: flex;
   justify-content: center;
   padding: 1rem;
+}
+
+.loader {
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 100rem) {

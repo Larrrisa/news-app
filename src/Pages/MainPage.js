@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import Page from "./News";
+import NewsPage from "./NewsPage";
 import handleTime from "../Utils/formatTime";
+import { Image, Segment } from "semantic-ui-react";
 
 function MainPage() {
   const [news, setNews] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getNews = async () => {
+    setIsLoading(true);
     try {
       const link = "https://hacker-news.firebaseio.com/v0/topstories.json";
       const newsResult = await fetch(link);
@@ -23,6 +26,7 @@ function MainPage() {
     } catch {
       console.log("error");
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -49,38 +53,44 @@ function MainPage() {
         </div>
       </div>
       <div className="content">
-        {news.map((data) => {
-          return (
-            <div className="news__item" key={data.id}>
-              <div className="news__item__info">
-                <Link
-                  to={{
-                    pathname: `${data.id}`,
-                  }}
-                >
-                  <p className="news__item__info__heading">{data.title}</p>
-                </Link>
+        {isLoading ? (
+          <Segment>
+            <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+          </Segment>
+        ) : (
+          news.map((data) => {
+            return (
+              <div className="news__item" key={data.id}>
+                <div className="news__item__info">
+                  <Link
+                    to={{
+                      pathname: `${data.id}`,
+                    }}
+                  >
+                    <p className="news__item__info__heading">{data.title}</p>
+                  </Link>
 
-                <div>
-                  {handleTime(data.time)} - by
-                  <span className="news__item__info__user"> {data.by}</span>
+                  <div>
+                    {handleTime(data.time)} - by
+                    <span className="news__item__info__user"> {data.by}</span>
+                  </div>
+                </div>
+                <div className="news__item__info__social">
+                  <p>
+                    {data.score === 1
+                      ? ` ${data.score} point`
+                      : `${data.score} points`}
+                  </p>
+                  <p>
+                    {data.descendants
+                      ? `${data.descendants} comments`
+                      : `0 comments`}
+                  </p>
                 </div>
               </div>
-              <div className="news__item__info__social">
-                <p>
-                  {data.score === 1
-                    ? ` ${data.score} point`
-                    : `${data.score} points`}
-                </p>
-                <p>
-                  {data.descendants
-                    ? `${data.descendants} comments`
-                    : `0 comments`}
-                </p>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
     </div>
   );
