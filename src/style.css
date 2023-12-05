@@ -34,19 +34,6 @@ h1 {
   border: none;
 }
 
-.news__item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: solid 1px #c8c8c8;
-}
-
-.news__item__info__heading {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-}
-
 a {
   text-decoration: none;
   color: rgb(226, 101, 43);
@@ -54,17 +41,6 @@ a {
 
 a:visited {
   color: rgb(221, 152, 120);
-}
-
-.news__item__info__user {
-  color: rgb(226, 101, 43);
-}
-
-.news__item__info__social {
-  display: flex;
-  align-self: center;
-  justify-content: space-between;
-  flex-basis: 15%;
 }
 
 .link {
@@ -76,48 +52,6 @@ a:visited {
   font-weight: bold;
   background-color: #ffffff;
   width: 5rem;
-}
-
-.header_comments {
-  margin-bottom: 2rem;
-}
-
-.comments__info {
-  margin-bottom: 2rem;
-  font-weight: bold;
-}
-
-.comments__count {
-  display: flex;
-  width: 15%;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.comments__info__link {
-  color: rgb(226, 101, 43);
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.comments__info__social {
-  display: flex;
-  justify-content: space-between;
-  width: 20%;
-}
-
-.comments__info__user {
-  color: rgb(226, 101, 43);
-}
-
-.comments__item {
-  line-height: 1.4;
-  border-bottom: solid 1px #c8c8c8;
-  padding-bottom: 1rem;
-  margin-bottom: 1rem;
 }
 
 ul {
@@ -166,37 +100,8 @@ ul > li {
     margin: 2rem 2rem;
   }
 
-  .news__item__info__social {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
   h1 {
     font-size: 1.5rem;
-  }
-
-  .comments__info__link {
-    overflow-wrap: anywhere;
-    font-size: 1.2rem;
-  }
-
-  .comments__info__social {
-    width: 20%;
-  }
-
-  .comments__count {
-    width: 20%;
-  }
-}
-
-@media (max-width: 50rem) {
-  .comments__info__social {
-    width: 40%;
-  }
-
-  .comments__count {
-    width: 40%;
   }
 }
 
@@ -211,22 +116,6 @@ ul > li {
 
   h1 {
     font-size: 1.5rem;
-  }
-
-  .comments__info {
-    margin-bottom: 1rem;
-  }
-
-  .comments__info__link {
-    font-size: 1rem;
-  }
-
-  .comments__info__social {
-    width: 50%;
-  }
-
-  .comments__count {
-    width: 30%;
   }
 
   .link_errorpage {

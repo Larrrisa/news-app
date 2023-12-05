@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import handleTime from "../Utils/formatTime";
-import childComments from "../Utils/childComments";
-import showChildComments from "../Utils/showChildComments";
+import { childComments, handleShowComments } from "../Utils/childComments";
+import getNewsInfo from "../Services/getNewsInfo";
+import getComments from "../Services/getComments";
 import { Image, Segment } from "semantic-ui-react";
 
 function NewsPage() {
@@ -11,66 +12,13 @@ function NewsPage() {
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getInfo = async () => {
-    try {
-      const link = `https://hacker-news.firebaseio.com/v0/item/${id}.json`;
-      const newsResult = await fetch(link);
-      const info = await newsResult.json();
-      setNewsInfo(info);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
-  const getComments = async () => {
-    try {
-      const link = `https://hacker-news.firebaseio.com/v0/item/${id}.json`;
-      const newsResult = await fetch(link);
-      const info = await newsResult.json();
-
-      function fetchComments(info) {
-        setIsLoading(true);
-        const commentPromises = info.kids.map((item) =>
-          fetch(`https://hacker-news.firebaseio.com/v0/item/${item}.json`).then(
-            (res) => res.json()
-          )
-        );
-
-        return Promise.all(commentPromises).then((comments) => {
-          const nestedComments = comments.map((item) => {
-            if (item.kids && item.kids.length > 0) {
-              return fetchComments(item).then((child) => {
-                return {
-                  main: item,
-                  child: child,
-                };
-              });
-            } else {
-              return {
-                main: item,
-                child: [],
-              };
-            }
-          });
-          return Promise.all(nestedComments);
-        });
-      }
-      const allChildComments = fetchComments(info).then((result) => {
-        setComments(result);
-        setIsLoading(false);
-      });
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
   useEffect(() => {
-    getInfo();
-    getComments();
+    getNewsInfo(id, setNewsInfo);
+    getComments(setIsLoading, setComments, id);
   }, []);
 
   function handleRefreshComments() {
-    getComments();
+    getComments(setIsLoading, setComments, id);
   }
 
   return (
@@ -123,7 +71,7 @@ function NewsPage() {
                   className="comments__item"
                   key={item.main.id}
                   onClick={(e) =>
-                    showChildComments(id, e, item, comments, setComments)
+                    handleShowComments(id, e, item, comments, setComments)
                   }
                 >
                   <div dangerouslySetInnerHTML={{ __html: item.main.text }} />

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import NewsPage from "./NewsPage";
+import getNews from "../Services/getNews";
+
 import handleTime from "../Utils/formatTime";
 import { Image, Segment } from "semantic-ui-react";
 
@@ -8,41 +10,20 @@ function MainPage() {
   const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getNews = async () => {
-    setIsLoading(true);
-    try {
-      const link = "https://hacker-news.firebaseio.com/v0/topstories.json";
-      const newsResult = await fetch(link);
-      const data = await newsResult.json();
-      const news = data
-        .slice(0, 100)
-        .map((id) =>
-          fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(
-            (res) => res.json()
-          )
-        );
-      const result = await Promise.all(news);
-      setNews(result);
-    } catch {
-      console.log("error");
-    }
-    setIsLoading(false);
-  };
-
   useEffect(() => {
-    getNews();
+    getNews(setIsLoading, setNews);
   }, []);
 
   function handleRefreshNews() {
-    getNews();
+    getNews(setIsLoading, setNews);
   }
 
-  useEffect(() => {
-    const timer = setInterval(getNews, 60000);
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const timer = setInterval(getNews, 60000);
+  //   return () => {
+  //     clearInterval(timer);
+  //   };
+  // }, []);
 
   return (
     <div className="container">

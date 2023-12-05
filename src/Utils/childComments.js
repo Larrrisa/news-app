@@ -1,4 +1,4 @@
-export default function childComments(items) {
+function childComments(items) {
   if (!items || items.length === 0) return null;
   return (
     <ul>
@@ -15,3 +15,18 @@ export default function childComments(items) {
     </ul>
   );
 }
+
+function handleShowComments(id, e, item, comments, setComments) {
+  const updatedComments = comments.map((comment) => {
+    if (comment.main.id === item.main.id) {
+      return {
+        ...comment,
+        show: true,
+      };
+    }
+    return comment;
+  });
+  setComments(updatedComments);
+}
+
+export { childComments, handleShowComments };
