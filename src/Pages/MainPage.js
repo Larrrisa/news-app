@@ -1,22 +1,29 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import NewsPage from "./NewsPage";
 import getNews from "../Services/getNews";
-
 import handleTime from "../Utils/formatTime";
 import { Image, Segment } from "semantic-ui-react";
 
 function MainPage() {
-  const [news, setNews] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [news, setNews] = useState([]);
+  // const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    getNews(setIsLoading, setNews);
-  }, []);
+  const { newsList } = useSelector((s) => s.news);
+  const dispatch = useDispatch();
 
   function handleRefreshNews() {
-    getNews(setIsLoading, setNews);
+    dispatch(getNews());
   }
+
+  // useEffect(() => {
+  //   getNews(setIsLoading, setNews);
+  // }, []);
+
+  // function handleRefreshNews() {
+  //   getNews(setIsLoading, setNews);
+  // }
 
   // useEffect(() => {
   //   const timer = setInterval(getNews, 60000);
@@ -34,12 +41,14 @@ function MainPage() {
         </div>
       </div>
       <div className="content">
-        {isLoading ? (
-          <Segment>
-            <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-          </Segment>
-        ) : (
-          news.map((data) => {
+        {
+          // isLoading ? (
+          // <Segment>
+          //   <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+          // </Segment>
+          // )
+          //   :
+          newsList.map((data) => {
             return (
               <div className="news__item" key={data.id}>
                 <div className="news__item__info">
@@ -71,7 +80,7 @@ function MainPage() {
               </div>
             );
           })
-        )}
+        }
       </div>
     </div>
   );
