@@ -1,36 +1,20 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import getAllNews from "../Redux/slice";
 import NewsPage from "./NewsPage";
 import getNews from "../Services/getNews";
 import handleTime from "../Utils/formatTime";
 import { Image, Segment } from "semantic-ui-react";
 
 function MainPage() {
-  // const [news, setNews] = useState([]);
-  // const [isLoading, setIsLoading] = useState(false);
-
-  const { newsList } = useSelector((s) => s.news);
+  const { allNews } = useSelector((state) => state.news);
+  console.log(allNews);
   const dispatch = useDispatch();
 
   function handleRefreshNews() {
-    dispatch(getNews());
+    dispatch(getAllNews());
   }
-
-  // useEffect(() => {
-  //   getNews(setIsLoading, setNews);
-  // }, []);
-
-  // function handleRefreshNews() {
-  //   getNews(setIsLoading, setNews);
-  // }
-
-  // useEffect(() => {
-  //   const timer = setInterval(getNews, 60000);
-  //   return () => {
-  //     clearInterval(timer);
-  //   };
-  // }, []);
 
   return (
     <div className="container">
@@ -48,7 +32,7 @@ function MainPage() {
           // </Segment>
           // )
           //   :
-          newsList.map((data) => {
+          allNews.map((data) => {
             return (
               <div className="news__item" key={data.id}>
                 <div className="news__item__info">

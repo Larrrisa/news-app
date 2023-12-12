@@ -1,17 +1,13 @@
 import { createSlice, createAsyncThunk, isPending } from "@reduxjs/toolkit";
 import getNews from "../Services/getNews";
 
-const initialState = { data: [], isLoading: false };
+const initialState = { allNews: [], isLoading: false };
 
 export const getAllNews = createAsyncThunk(
   "allNews/getAllNews",
   async (_, { fulfillWithValue, rejectWithValue }) => {
     try {
       const allNews = await getNews().then((res) => res.slice(0, 100));
-
-      // const newsList = await Promise.allSettled(
-      //   allNews.map((i) => getNewsInfo(i))
-      // );
 
       return fulfillWithValue(allNews);
     } catch (error) {
@@ -27,7 +23,7 @@ const newsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getAllNews.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.newsList = action.payload.reduce((acc, el) => {
+      state.allNews = action.payload.reduce((acc, el) => {
         if (el.status === "fulfilled") {
           acc.push(el.value);
           return acc;
