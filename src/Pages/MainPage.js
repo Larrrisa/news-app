@@ -18,12 +18,12 @@ function MainPage() {
     getNews(setIsLoading, setNews);
   }
 
-  // useEffect(() => {
-  //   const timer = setInterval(getNews, 60000);
-  //   return () => {
-  //     clearInterval(timer);
-  //   };
-  // }, []);
+  useEffect(() => {
+    const timer = setInterval(getNews, 60000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
 
   return (
     <div className="container">
