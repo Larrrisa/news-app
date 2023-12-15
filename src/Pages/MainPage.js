@@ -9,7 +9,7 @@ import { Image, Segment } from "semantic-ui-react";
 
 function MainPage() {
   const { allNews } = useSelector((state) => state.news);
-  console.log(allNews);
+  console.log(news);
   const dispatch = useDispatch();
 
   function handleRefreshNews() {
