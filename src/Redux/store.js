@@ -1,8 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
-import newsSlice from "../Redux/slice";
+import { setupListeners } from "@reduxjs/toolkit/query";
+import { allNewsApi } from "./apis";
 
 export const store = configureStore({
   reducer: {
-    news: newsSlice,
+    [allNewsApi.reducerPath]: allNewsApi.reducer,
+  },
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware().concat(allNewsApi.middleware);
   },
 });
+
+setupListeners(store.dispatch);
+
+export { useFetchNewsByIdQuery } from "./apis";

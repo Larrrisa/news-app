@@ -1,38 +1,32 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import getAllNews from "../Redux/slice";
 import NewsPage from "./NewsPage";
 import getNews from "../Services/getNews";
 import handleTime from "../Utils/formatTime";
 import { Image, Segment } from "semantic-ui-react";
+import { useFetchAllNewsQuery, useFetchNewsByIdQuery } from "../Redux/apis";
 
 function MainPage() {
-  const { allNews } = useSelector((state) => state.news);
-  console.log(news);
-  const dispatch = useDispatch();
+  const { data: allNewsData, isLoading: allNewsLoading } =
+    useFetchAllNewsQuery();
 
-  function handleRefreshNews() {
-    dispatch(getAllNews());
-  }
-
+  console.log(allNewsData);
   return (
     <div className="container">
       <div className="header">
         <h1>Hacker News </h1>
-        <div onClick={handleRefreshNews}>
+        {/* <div onClick={handleRefreshNews}>
           <ion-icon size="large" name="refresh-outline"></ion-icon>
-        </div>
+        </div> */}
       </div>
       <div className="content">
-        {
-          // isLoading ? (
-          // <Segment>
-          //   <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-          // </Segment>
-          // )
-          //   :
-          allNews.map((data) => {
+        {allNewsLoading ? (
+          <Segment>
+            <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+          </Segment>
+        ) : (
+          allNewsData.map((data) => {
             return (
               <div className="news__item" key={data.id}>
                 <div className="news__item__info">
@@ -43,7 +37,6 @@ function MainPage() {
                   >
                     <p className="news__item__info__heading">{data.title}</p>
                   </Link>
-
                   <div>
                     {handleTime(data.time)} - by
                     <span className="news__item__info__user"> {data.by}</span>
@@ -64,7 +57,7 @@ function MainPage() {
               </div>
             );
           })
-        }
+        )}
       </div>
     </div>
   );
