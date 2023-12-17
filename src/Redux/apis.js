@@ -8,19 +8,29 @@ const allNewsApi = createApi({
   endpoints(builder) {
     return {
       fetchAllNews: builder.query({
-        query: (news) => {
-          return {
-            url: "/topstories.json",
-            params: {},
-            method: "GET",
-          };
+        async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
+          const allNews = await fetchWithBQ("/topstories.json");
+          if (allNews.error)
+            return {
+              error: allNews.error,
+            };
+          const oneNewsInfo = allNews.data.slice(0, 100);
+
+          const result = await Promise.all(
+            oneNewsInfo.map((itemId) => {
+              return fetchWithBQ(`/item/${itemId}.json`);
+            })
+          );
+
+          return { data: result };
         },
       }),
+
       fetchNewsById: builder.query({
         query: (id) => {
           return {
             url: `/item/${id}.json`,
-            params: {},
+            params: { id: id },
             method: "GET",
           };
         },

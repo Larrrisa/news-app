@@ -1,56 +1,61 @@
-import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import NewsPage from "./NewsPage";
-import getNews from "../Services/getNews";
 import handleTime from "../Utils/formatTime";
 import { Image, Segment } from "semantic-ui-react";
-import { useFetchAllNewsQuery, useFetchNewsByIdQuery } from "../Redux/apis";
+import { useFetchAllNewsQuery } from "../Redux/apis";
 
 function MainPage() {
-  const { data: allNewsData, isLoading: allNewsLoading } =
-    useFetchAllNewsQuery();
+  const { data, isLoading, refetch } = useFetchAllNewsQuery();
 
-  console.log(allNewsData);
+  function handleRefreshNews() {
+    refetch();
+  }
+
   return (
     <div className="container">
       <div className="header">
         <h1>Hacker News </h1>
-        {/* <div onClick={handleRefreshNews}>
+        <div onClick={handleRefreshNews}>
           <ion-icon size="large" name="refresh-outline"></ion-icon>
-        </div> */}
+        </div>
       </div>
       <div className="content">
-        {allNewsLoading ? (
+        {isLoading ? (
           <Segment>
             <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
           </Segment>
         ) : (
-          allNewsData.map((data) => {
+          data &&
+          data.map((item) => {
             return (
-              <div className="news__item" key={data.id}>
+              <div className="news__item" key={item.data.id}>
                 <div className="news__item__info">
                   <Link
                     to={{
-                      pathname: `${data.id}`,
+                      pathname: `${item.data.id}`,
                     }}
                   >
-                    <p className="news__item__info__heading">{data.title}</p>
+                    <p className="news__item__info__heading">
+                      {item.data.title}
+                    </p>
                   </Link>
                   <div>
-                    {handleTime(data.time)} - by
-                    <span className="news__item__info__user"> {data.by}</span>
+                    {handleTime(item.data.time)} - by
+                    <span className="news__item__info__user">
+                      {" "}
+                      {item.data.by}
+                    </span>
                   </div>
                 </div>
                 <div className="news__item__info__social">
                   <p>
-                    {data.score === 1
-                      ? ` ${data.score} point`
-                      : `${data.score} points`}
+                    {item.data.score === 1
+                      ? ` ${item.data.score} point`
+                      : `${item.data.score} points`}
                   </p>
                   <p>
-                    {data.descendants
-                      ? `${data.descendants} comments`
+                    {item.data.descendants
+                      ? `${item.data.descendants} comments`
                       : `0 comments`}
                   </p>
                 </div>

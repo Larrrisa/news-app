@@ -13,4 +13,4 @@ export const store = configureStore({
 
 setupListeners(store.dispatch);
 
-export { useFetchNewsByIdQuery } from "./apis";
+export { useFetchAllNewsQuery, useFetchNewsByIdQuery } from "./apis";

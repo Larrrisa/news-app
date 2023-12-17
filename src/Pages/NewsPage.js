@@ -2,18 +2,24 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import handleTime from "../Utils/formatTime";
 import { childComments, handleShowComments } from "../Utils/childComments";
-import getNewsInfo from "../Services/getNewsInfo";
 import getComments from "../Services/getComments";
 import { Image, Segment } from "semantic-ui-react";
+import { useFetchNewsByIdQuery } from "../Redux/apis";
 
 function NewsPage() {
   const { id } = useParams();
-  const [newsInfo, setNewsInfo] = useState();
+  const {
+    data: newsData,
+    isLoading: isNewsLoading,
+    refetch: newsRefetch,
+  } = useFetchNewsByIdQuery(id);
+
+  console.log(newsData);
+
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    getNewsInfo(id, setNewsInfo);
     getComments(setIsLoading, setComments, id);
   }, []);
 
@@ -32,22 +38,22 @@ function NewsPage() {
           Go back
         </Link>
       </div>
-      {newsInfo && (
-        <div key={newsInfo.time.id}>
+      {newsData && (
+        <div key={newsData.time.id}>
           <div className="header_comments">
-            <h1>{newsInfo.title} </h1>
+            <h1>{newsData.title} </h1>
           </div>
           <div className="comments__info">
-            <p className="comments__info__link">{newsInfo.url}</p>
+            <p className="comments__info__link">{newsData.url}</p>
             <div className="comments__info__social">
-              <p>{handleTime(newsInfo.time)}</p>
+              <p>{handleTime(newsData.time)}</p>
               <p>
-                by <span className="comments__info__user">{newsInfo.by}</span>
+                by <span className="comments__info__user">{newsData.by}</span>
               </p>
             </div>
           </div>
           <div className="comments__count">
-            <span>{newsInfo.descendants ? newsInfo.descendants : 0}</span>
+            <span>{newsData.descendants ? newsData.descendants : 0}</span>
             <p>Comments</p>
             <div onClick={handleRefreshComments}>
               <ion-icon size="large" name="refresh-outline"></ion-icon>
